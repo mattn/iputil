@@ -37,7 +37,7 @@ func (r *Range) CIDR() string {
 
 func Ranges(query string) ([]Range, error) {
 	req := &whois.Request{
-		Query: "HINET-NET",
+		Query: query,
 		Host:  "whois.apnic.net",
 	}
 	if err := req.Prepare(); err != nil {
