@@ -36,15 +36,15 @@ func (r *Range) CIDR() string {
 }
 
 func Ranges(query string) ([]Range, error) {
-	whoisRequest := &whois.Request{
+	req := &whois.Request{
 		Query: "HINET-NET",
 		Host:  "whois.apnic.net",
 	}
-	if err := whoisRequest.Prepare(); err != nil {
+	if err := req.Prepare(); err != nil {
 		return nil, err
 	}
 
-	resp, err := whois.DefaultClient.Fetch(whoisRequest)
+	resp, err := whois.DefaultClient.Fetch(req)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func Ranges(query string) ([]Range, error) {
 
 	// sort by begin address
 	sort.Slice(rngs, func(i, j int) bool {
-		return toUint32(rngs[i].Begin) < toUint32(rngs[i].Begin)
+		return toUint32(rngs[i].Begin) < toUint32(rngs[j].Begin)
 	})
 
 	// join ranges
