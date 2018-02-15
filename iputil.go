@@ -3,6 +3,7 @@ package iputil
 import (
 	"bufio"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"net"
 	"sort"
@@ -33,6 +34,35 @@ func (r *Range) CIDR() string {
 		mask = (mask << 1) | 1
 	}
 	return fmt.Sprintf("%s/%d", r.Begin, bits)
+}
+
+func Country(query string) (string, error) {
+	req := &whois.Request{
+		Query: query,
+		Host:  "whois.apnic.net",
+	}
+	if err := req.Prepare(); err != nil {
+		return "", err
+	}
+
+	resp, err := whois.DefaultClient.Fetch(req)
+	if err != nil {
+		return "", err
+	}
+	scanner := bufio.NewScanner(strings.NewReader(resp.String()))
+
+	for scanner.Scan() {
+		if !strings.HasPrefix(scanner.Text(), "country:") {
+			continue
+		}
+		token := strings.SplitN(scanner.Text(), ":", 2)
+		if len(token) != 2 {
+			continue
+		}
+		return strings.TrimSpace(token[1]), nil
+	}
+
+	return "", errors.New("not found")
 }
 
 func Ranges(query string) ([]Range, error) {
