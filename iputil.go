@@ -39,7 +39,7 @@ func (r *Range) CIDR() string {
 func Country(query string) (string, error) {
 	req := &whois.Request{
 		Query: query,
-		Host:  "whois.apnic.net",
+		Host:  "whois.ripe.net",
 	}
 	if err := req.Prepare(); err != nil {
 		return "", err
@@ -68,7 +68,7 @@ func Country(query string) (string, error) {
 func Ranges(query string) ([]Range, error) {
 	req := &whois.Request{
 		Query: query,
-		Host:  "whois.apnic.net",
+		Host:  "whois.ripe.net",
 	}
 	if err := req.Prepare(); err != nil {
 		return nil, err
